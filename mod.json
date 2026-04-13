@@ -6,7 +6,7 @@
     },
     "id": "realgares.colorblind-mode",
     "name": "Colorblind Mode",
-    "version": "v1.0.0",
+    "version": "v1.0.1",
     "developer": "RealGares",
     "description": "Adds colorblind accessibility filters.",
     "tags": [
