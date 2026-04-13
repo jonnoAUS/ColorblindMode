@@ -1,0 +1,25 @@
+# ── Build artifacts ────────────────────────────────────────────
+build/
+build-*/
+cmake-build-*/
+out/
+
+# ── IDE ────────────────────────────────────────────────────────
+.vs/
+*.user
+*.suo
+*.sdf
+*.opensdf
+.idea/
+*.iml
+
+# ── OS ─────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── Geode ──────────────────────────────────────────────────────
+*.geode
+
+# ── CPM cache (should be outside the repo) ─────────────────────
+_deps/
