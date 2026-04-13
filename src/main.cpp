@@ -1,18 +1,3 @@
-/**
- * ═══════════════════════════════════════════════════════════════
- *  Colorblind Mode — Geode Mod for Geometry Dash
- *  Author:  garesplayzz12
- *  License: MIT
- * ═══════════════════════════════════════════════════════════════
- *
- *  Applies colorblind correction by overlaying a tinted layer
- *  with multiplicative blending (GL_DST_COLOR). This shifts
- *  the per-channel color balance to help distinguish colors.
- *
- *  No render-to-texture, no custom shaders — just a colored
- *  CCLayerColor that multiplies with every pixel underneath.
- */
-
 #include <Geode/Geode.hpp>
 #include <Geode/modify/MenuLayer.hpp>
 #include <Geode/modify/PlayLayer.hpp>
@@ -21,24 +6,9 @@
 
 using namespace geode::prelude;
 
-// ── Constants ─────────────────────────────────────────────────
 static constexpr int FILTER_TAG    = 0xCB01;
 static constexpr int INDICATOR_TAG = 0xCB02;
 static constexpr int MENU_BTN_TAG  = 0xCB03;
-
-// ═══════════════════════════════════════════════════════════════
-//  Color tint values per mode
-// ═══════════════════════════════════════════════════════════════
-//
-//  With GL_DST_COLOR, GL_ZERO blending the result is:
-//      output = overlay_color * screen_color  (per-channel)
-//
-//  Values below 255 reduce that channel, creating a color shift
-//  that helps distinguish problem colors.
-//
-//  These are applied at strength=1.0. At strength=0, all channels
-//  are 255 (no change). The slider lerps between them.
-// ═══════════════════════════════════════════════════════════════
 
 struct ColorTint {
     uint8_t r, g, b;
@@ -52,10 +22,6 @@ static std::unordered_map<std::string, ColorTint> const TINT_VALUES = {
     // Tritanopia (blue-weak): reduce blue, keep red/green
     { "Tritanopia",   { 255, 230, 175 } },
 };
-
-// ═══════════════════════════════════════════════════════════════
-//  Utility — Compute the blended tint color for current settings
-// ═══════════════════════════════════════════════════════════════
 
 static ccColor3B computeTintColor() {
     auto mode     = Mod::get()->getSettingValue<std::string>("filter-mode");
@@ -75,10 +41,6 @@ static ccColor3B computeTintColor() {
 
     return { lerp(t.r), lerp(t.g), lerp(t.b) };
 }
-
-// ═══════════════════════════════════════════════════════════════
-//  Utility — Add or update the filter overlay on a scene
-// ═══════════════════════════════════════════════════════════════
 
 static void applyFilter(CCNode* target) {
     if (!target) return;
@@ -114,10 +76,6 @@ static void refreshRunningScene() {
     if (scene) applyFilter(scene);
 }
 
-// ═══════════════════════════════════════════════════════════════
-//  Hook: CCScene — Auto-apply filter on every new scene
-// ═══════════════════════════════════════════════════════════════
-
 class $modify(ColorblindScene, CCScene) {
     bool init() {
         if (!CCScene::init()) return false;
@@ -134,10 +92,6 @@ class $modify(ColorblindScene, CCScene) {
         applyFilter(this);
     }
 };
-
-// ═══════════════════════════════════════════════════════════════
-//  Hook: MenuLayer — Small toggle button, top-right
-// ═══════════════════════════════════════════════════════════════
 
 class $modify(ColorblindMenuLayer, MenuLayer) {
     bool init() {
@@ -205,10 +159,6 @@ class $modify(ColorblindMenuLayer, MenuLayer) {
     }
 };
 
-// ═══════════════════════════════════════════════════════════════
-//  Hook: PlayLayer — Gameplay HUD indicator
-// ═══════════════════════════════════════════════════════════════
-
 class $modify(ColorblindPlayLayer, PlayLayer) {
     bool init(GJGameLevel* level, bool useReplay, bool dontCreateObjects) {
         if (!PlayLayer::init(level, useReplay, dontCreateObjects)) return false;
@@ -232,10 +182,6 @@ class $modify(ColorblindPlayLayer, PlayLayer) {
         return true;
     }
 };
-
-// ═══════════════════════════════════════════════════════════════
-//  Setting listeners — refresh filter on any change
-// ═══════════════════════════════════════════════════════════════
 
 static ListenerHandle* s_enabledListener   = nullptr;
 static ListenerHandle* s_filterModeListener = nullptr;
